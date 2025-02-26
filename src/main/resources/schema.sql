@@ -1,0 +1,40 @@
+CREATE TABLE PLAYERS (
+    player_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE GAMES (
+    game_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE GAME_SESSIONS (
+    session_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    game_id BIGINT NOT NULL,
+    created_by BIGINT NOT NULL,
+    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP,
+    winner_id BIGINT,
+    FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
+    FOREIGN KEY (created_by) REFERENCES PLAYERS(player_id),
+    FOREIGN KEY (winner_id) REFERENCES PLAYERS(player_id)
+);
+
+CREATE TABLE SCORES (
+    score_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    session_id BIGINT NOT NULL,
+    player_id BIGINT NOT NULL,
+    score INT NOT NULL,
+    FOREIGN KEY (session_id) REFERENCES GAME_SESSIONS(session_id),
+    FOREIGN KEY (player_id) REFERENCES PLAYERS(player_id)
+);
+
+CREATE TABLE LEADERBOARDS (
+    leaderboard_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    game_id BIGINT NOT NULL,
+    player_id BIGINT NOT NULL,
+    total_score INT NOT NULL,
+    FOREIGN KEY (game_id) REFERENCES GAMES(game_id),
+    FOREIGN KEY (player_id) REFERENCES PLAYERS(player_id),
+    UNIQUE (game_id, player_id)
+);
